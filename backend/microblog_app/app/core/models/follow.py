@@ -2,6 +2,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
+from core.models import User
 
 
 class Follow(Base):

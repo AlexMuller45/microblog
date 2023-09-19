@@ -1,9 +1,6 @@
 from fastapi import APIRouter
 
-router = APIRouter(
-    prefix="/api/users",
-    tags=["Users"],
-)
+router = APIRouter(tags=["Users"])
 
 
 @router.post("/{idx}/follow")

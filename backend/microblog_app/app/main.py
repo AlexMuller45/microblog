@@ -1,14 +1,10 @@
 from fastapi import FastAPI
 
-from tweets.views import router as tweets_router
-from medias.views import router as medias_router
-from users.views import router as users_router
-
+from api_v1 import router as router_v1
+from core.config import settings
 
 app = FastAPI()
-app.include_router(tweets_router)
-app.include_router(medias_router)
-app.include_router(users_router)
+app.include_router(router_v1, prefix=settings.api_v1_prefix)
 
 
 @app.get("/")
