@@ -10,9 +10,9 @@ __all__ = (
 )
 
 from .base import Base
-from .user import User
-from .like import Like
-from .follow import Follow
-from .tweet import Tweet
-from .media import Media
 from .db_helper import DatabaseHelper, db_helper
+from .follow import Follow
+from .like import Like
+from .media import Media
+from .tweet import Tweet
+from .user import User

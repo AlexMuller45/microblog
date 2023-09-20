@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .schemas import Tweet, TweetResponse
-from . import crud
 from core.models import db_helper
 
+from . import crud
+from .schemas import Tweet, TweetResponse
 
 router = APIRouter(tags=["Tweets"])
 

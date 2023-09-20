@@ -1,11 +1,6 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import (
-    sessionmaker,
-    DeclarativeBase,
-    Mapped,
-    mapped_column,
-    declared_attr,
-)
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import (DeclarativeBase, Mapped, declared_attr,
+                            mapped_column, sessionmaker)
 
 
 class Base(DeclarativeBase):

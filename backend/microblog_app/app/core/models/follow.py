@@ -1,8 +1,9 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .base import Base
 from core.models import User
+
+from .base import Base
 
 
 class Follow(Base):

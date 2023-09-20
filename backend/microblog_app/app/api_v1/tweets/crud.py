@@ -1,8 +1,9 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.engine import Result
 from sqlalchemy import select
+from sqlalchemy.engine import Result
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import Tweet, Follow, User
+from core.models import Follow, Tweet, User
+
 from .schemas import TweetBase
 
 

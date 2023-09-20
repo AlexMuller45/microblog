@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from .tweets.views import router as tweets_router
 from .medias.views import router as medias_router
+from .tweets.views import router as tweets_router
 from .users.views import router as users_router
 
 router = APIRouter()
