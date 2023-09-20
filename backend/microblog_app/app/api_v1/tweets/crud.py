@@ -6,7 +6,8 @@ from core.models import Tweet, Follow, User
 from .schemas import TweetBase
 
 
-async def get_tweets_for_user(session: AsyncSession, current_user: User) -> list[Tweet]:
+async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
+
     subq = select(Follow.following).where(Follow.followers == current_user).subquery()
     stmt = select(Tweet).where(Tweet.author.in_(subq))
     result: Result = await session.execute(stmt)

@@ -31,4 +31,4 @@ def delete_like(idx: int):
 
 @router.get("/", response_model=list[Tweet])
 async def get_tweets(session: AsyncSession = Depends(db_helper.session_dependency)):
-    return await crud.get_tweets_for_user(session=session, current_user=User)
+    return await crud.get_tweets_for_user(session=session)
