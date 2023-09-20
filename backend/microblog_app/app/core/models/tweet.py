@@ -10,8 +10,12 @@ from .user import User
 
 class Tweet(Base):
     content: Mapped[str]
-    author: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    attachments: Mapped[list[int]] = mapped_column(ARRAY(int))
+    author: Mapped[int] = mapped_column(
+        ForeignKey("users.id"),
+    )
+    attachments: Mapped[list[int]] = mapped_column(
+        ARRAY(int),
+    )
 
     def __repr__(self) -> str:
         return f"id: {self.id}, content: {self.content}, author: {self.author}"
