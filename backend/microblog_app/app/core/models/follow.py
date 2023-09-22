@@ -1,9 +1,5 @@
-from typing import List
-
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from core.models import User
+from sqlalchemy.orm import Mapped, mapped_column
 
 from .base import Base
 

@@ -18,9 +18,9 @@ class Setting(BaseSettings):
     db_url: str
     db_echo: bool = False
     api_v1_prefix: str = "/api"
-    # pgadmin_default_email: str
-    # pgadmin_default_password: str
-    # pgadmin_listen_port: int
+    pgadmin_default_email: str
+    pgadmin_default_password: str
+    pgadmin_listen_port: int
 
 
 settings = Setting()

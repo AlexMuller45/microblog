@@ -1,8 +1,12 @@
+from typing import TYPE_CHECKING
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from core.models.base import Base
-from core.models import Tweet
+
+if TYPE_CHECKING:
+    from .tweet import Tweet
 
 
 class Media(Base):

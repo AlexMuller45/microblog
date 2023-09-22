@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped, relationship
 
 from core.models.base import Base
-from core.models import Tweet, Follow
+
+if TYPE_CHECKING:
+    from .tweet import Tweet
 
 
 class User(Base):

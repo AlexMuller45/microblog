@@ -1,11 +1,15 @@
-from typing import List
+from typing import List, TYPE_CHECKING
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from .base import Base
-from core.models import User, Like, Media
+from core.models.base import Base
+
+if TYPE_CHECKING:
+    from .user import User
+    from .like import Like
+    from .media import Media
 
 
 class Tweet(Base):
@@ -13,7 +17,7 @@ class Tweet(Base):
     author: Mapped[int] = mapped_column(
         ForeignKey("users_tab.id"),
     )
-    attachments: Mapped[list[int]] = mapped_column(ARRAY(int))
+    attachments: Mapped[List[str] | None] = mapped_column(ARRAY(String))
     views: Mapped[int]
 
     likes: Mapped[List["Like"]] = relationship(
