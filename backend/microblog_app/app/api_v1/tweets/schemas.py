@@ -14,6 +14,10 @@ class Tweet(TweetBase):
     id: int
 
 
-class TweetResponse(BaseModel):
+class TweetCreate(BaseModel):
     result: bool = True
     tweet_id: int
+
+
+class TweetDelete(BaseModel):
+    result: bool = True

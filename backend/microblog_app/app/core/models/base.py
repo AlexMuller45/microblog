@@ -1,6 +1,11 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import (DeclarativeBase, Mapped, declared_attr,
-                            mapped_column, sessionmaker)
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    declared_attr,
+    mapped_column,
+    sessionmaker,
+)
 
 
 class Base(DeclarativeBase):
@@ -9,6 +14,6 @@ class Base(DeclarativeBase):
 
     @declared_attr.directive
     def __tablename__(cls) -> str:
-        return f"{cls.__name__.lower()}s"
+        return f"{cls.__name__.lower()}s_tab"
 
     id: Mapped[int] = mapped_column(primary_key=True)
