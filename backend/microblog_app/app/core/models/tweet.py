@@ -1,4 +1,4 @@
-from typing import List, TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -7,9 +7,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.models.base import Base
 
 if TYPE_CHECKING:
-    from .user import User
     from .like import Like
     from .media import Media
+    from .user import User
 
 
 class Tweet(Base):

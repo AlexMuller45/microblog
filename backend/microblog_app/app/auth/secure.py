@@ -28,15 +28,15 @@ async def check_user(
     )
 
 
-async def get_user(
+async def get_user_id(
     session: AsyncSession,
     api_key: str = Security(api_key_header),
-) -> Optional[User]:
-    stmt = select(User).where(User.api_key == api_key)
+) -> int:
+    stmt = select(User.id).where(User.api_key == api_key)
     result: Result = await session.execute(stmt)
-    user = result.scalars().one_or_none()
+    user_id = result.scalars().one_or_none()
 
-    if user:
-        return User(**user)
+    if user_id:
+        return int(user_id)
 
     raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="User not found")

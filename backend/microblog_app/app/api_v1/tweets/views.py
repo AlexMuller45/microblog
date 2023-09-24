@@ -3,11 +3,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
 
+from ..likes.views import router as likes_router
 from . import crud
 from .dependencies import tweet_by_id
 from .schemas import Tweet, TweetCreate, TweetDelete
 
 router = APIRouter(tags=["Tweets"])
+router.include_router(router=likes_router)
 
 
 @router.get("/", response_model=list[Tweet])
@@ -28,13 +30,3 @@ async def delete_tweet(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     await crud.delete_tweet(session=session, tweet=tweet)
-
-
-@router.post("/{idx}/like")
-def add_like(idx: int):
-    ...
-
-
-@router.delete("/{idx}/like")
-def delete_like(idx: int):
-    ...

@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.secure import get_user
+from auth.secure import get_user_id
 from core.models import Follow, Tweet
 
 from .schemas import TweetCreate
@@ -17,10 +17,21 @@ async def get_tweet(session: AsyncSession, tweet_id: int) -> Tweet | None:
     return await session.get(Tweet, tweet_id)
 
 
+async def get_last_tweet_id(session: AsyncSession) -> int:
+    stmt = select(Tweet).order_by(Tweet.id.desc())
+    result: Result = await session.execute(stmt)
+    tweet = result.scalars().first()
+    return tweet.id
+
+
 async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
-    current_user = get_user(session=session)
-    subq = select(Follow.following).where(Follow.followers == current_user).subquery()
-    stmt = select(Tweet).where(Tweet.author.in_(subq))
+    current_user_id = get_user_id(session=session)
+    subq = (
+        select(Follow.follow_user_id)
+        .where(Follow.user_id == current_user_id)
+        .subquery()
+    )
+    stmt = select(Tweet).where(Tweet.author.in_(subq)).order_by(Tweet.views, Tweet.id)
     result: Result = await session.execute(stmt)
     tweets = result.scalars().all()
     return list(tweets)

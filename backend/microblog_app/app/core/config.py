@@ -21,6 +21,12 @@ class Setting(BaseSettings):
     pgadmin_default_email: str
     pgadmin_default_password: str
     pgadmin_listen_port: int
+    media_path: str = f"{BASE_DIR}/media"
+    error_response: dict[str:bool, str:str, str:str] = {
+        "result": False,
+        "error_type": "",
+        "error_message": "",
+    }
 
 
 settings = Setting()
