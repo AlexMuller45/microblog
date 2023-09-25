@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 
 class Media(Base):
     filename: Mapped[str]
+    # TODO убрать привязку к твиту
     tweet_id: Mapped[int] = mapped_column(ForeignKey("tweets_tab.id"))
 
     tweet: Mapped["Tweet"] = relationship(back_populates="medias")

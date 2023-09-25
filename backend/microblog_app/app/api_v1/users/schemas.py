@@ -21,4 +21,21 @@ class Following(BaseModel):
 
 class UserInfo(User):
     followers: Optional[Followers]
-    following: Optional[Following]
+
+
+class UserData(BaseModel):
+    result: bool = True
+    user: UserInfo
+    following: List[Following]
+
+
+class UserResponse(BaseModel):
+    result: bool = True
+
+
+class FollowAdd(UserResponse):
+    ...
+
+
+class FollowDelete(UserResponse):
+    ...
