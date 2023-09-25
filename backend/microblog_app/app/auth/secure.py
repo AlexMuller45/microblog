@@ -40,3 +40,13 @@ async def get_user_id(
         return int(user_id)
 
     raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="User not found")
+
+
+async def get_user(
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    api_key: str = Security(api_key_header),
+) -> User:
+    stmt = select(User).where(User.api_key == api_key)
+    result: Result = await session.execute(stmt)
+    user = result.scalars().one()
+    return user

@@ -25,7 +25,7 @@ async def get_last_tweet_id(session: AsyncSession) -> int:
 
 
 async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
-    current_user_id = get_user_id(session=session)
+    current_user_id = await get_user_id(session=session)
     subq = (
         select(Follow.follow_user_id)
         .where(Follow.user_id == current_user_id)
