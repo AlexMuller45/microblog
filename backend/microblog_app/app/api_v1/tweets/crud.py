@@ -1,11 +1,11 @@
 import json
-from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
 
 from auth.secure import get_user_id
 from core.models import Follow, Tweet
@@ -31,7 +31,12 @@ async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
         .where(Follow.user_id == current_user_id)
         .subquery()
     )
-    stmt = select(Tweet).where(Tweet.author.in_(subq)).order_by(Tweet.views, Tweet.id)
+    stmt = (
+        select(Tweet)
+        .options(selectinload(Tweet.likes, Tweet.user, Tweet.medias))
+        .where(Tweet.author.in_(subq))
+        .order_by(Tweet.views, Tweet.id)
+    )
     result: Result = await session.execute(stmt)
     tweets = result.scalars().all()
     return list(tweets)
