@@ -32,14 +32,6 @@ async def delete_follow(
     await crud.delete_follow(session=session, follow=follow)
 
 
-@router.get("/me")
-def get_me(
-    session: AsyncSession = Depends(db_helper.session_dependency),
-    user: User = Depends(get_user),
-):
-    ...
-
-
 @router.get("/{idx}", response_model=UserData)
 async def get_user_by_id(
     user: User = Depends(get_user_by_id),
@@ -47,6 +39,14 @@ async def get_user_by_id(
     following: List[User] = Depends(get_following),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
-    crud.get_user_data(
-        session=session, user=user, followers=followers, following=following
-    )
+    crud.get_user_data(user=user, followers=followers, following=following)
+
+
+@router.get("/me", response_model=UserData)
+def get_me(
+    session: AsyncSession = Depends(db_helper.session_dependency),
+    user: User = Depends(get_user),
+    followers: List[User] = Depends(get_follower),
+    following: List[User] = Depends(get_following),
+):
+    crud.get_user_data(user=user, followers=followers, following=following)

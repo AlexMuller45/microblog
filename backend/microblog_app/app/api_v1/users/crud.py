@@ -1,4 +1,5 @@
-from typing import List
+import json
+from typing import List, Dict, Any
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select, Result
@@ -60,16 +61,13 @@ async def get_user(session: AsyncSession, user_id: int) -> User | None:
 
 
 def get_user_data(
-    session: AsyncSession,
     user: User,
     followers: List[User],
     following: List[User],
 ) -> JSONResponse:
-    response_data = {
-        "result": True,
-        "user": jsonable_encoder(user),
-    }
-    response_data["user"]["followers"] = jsonable_encoder(followers)
-    response_data["following"] = jsonable_encoder(following)
+    response_data: json = {"result": True}
+    response_data["user"].update(jsonable_encoder(user))
+    response_data["user"]["followers"].update(jsonable_encoder(followers))
+    response_data["following"].update(jsonable_encoder(following))
 
     return JSONResponse(content=response_data)

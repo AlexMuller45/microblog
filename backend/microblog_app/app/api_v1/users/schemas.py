@@ -20,13 +20,13 @@ class Following(BaseModel):
 
 
 class UserInfo(User):
-    followers: Optional[Followers]
+    followers: Optional[List[User]]
 
 
 class UserData(BaseModel):
     result: bool = True
     user: UserInfo
-    following: List[Following]
+    following: List[User]
 
 
 class UserResponse(BaseModel):

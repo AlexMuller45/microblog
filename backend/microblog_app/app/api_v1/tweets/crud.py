@@ -43,7 +43,7 @@ async def create_tweet(session: AsyncSession, tweet_in: TweetCreate) -> JSONResp
     await session.commit()
     await session.refresh(tweet)
 
-    response_json: json = jsonable_encoder({"result": True, "tweet_id": tweet.id})
+    response_json: json = {"result": True, "tweet_id": tweet.id}
     return JSONResponse(content=response_json)
 
 
