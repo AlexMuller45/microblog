@@ -33,7 +33,11 @@ async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
     )
     stmt = (
         select(Tweet)
-        .options(selectinload(Tweet.likes, Tweet.user, Tweet.medias))
+        .options(
+            selectinload(Tweet.likes),
+            joinedload(Tweet.user),
+            selectinload(Tweet.medias),
+        )
         .where(Tweet.author.in_(subq))
         .order_by(Tweet.views, Tweet.id)
     )
