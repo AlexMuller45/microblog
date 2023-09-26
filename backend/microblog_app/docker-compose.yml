@@ -11,7 +11,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     logging:
@@ -32,10 +32,22 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_LISTEN_PORT: ${PGADMIN_LISTEN_PORT}
     ports:
-      - 15432:${PGADMIN_LISTEN_PORT}
+      - "15432:${PGADMIN_LISTEN_PORT}"
     depends_on:
       - postgres
+
+  frontend:
+    image: nginx
+    container_name: web
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5500:5500"
+    volumes:
+      - ../../frontend/static:/usr/share/nginx/html/
 
 volumes:
   postgres:
   pgadmin:
+  frontend:
