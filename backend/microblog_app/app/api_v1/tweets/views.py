@@ -6,7 +6,7 @@ from core.models import db_helper
 from ..likes.views import router as likes_router
 from . import crud
 from .dependencies import tweet_by_id
-from .schemas import Tweet, TweetCreate, TweetDelete
+from .schemas import Tweet, TweetCreate, TweetDelete, TweetIn
 
 router = APIRouter(tags=["Tweets"])
 router.include_router(router=likes_router)
@@ -19,7 +19,7 @@ async def get_tweets(session: AsyncSession = Depends(db_helper.session_dependenc
 
 @router.post("/", response_model=TweetCreate)
 async def add_tweet(
-    tweet_in: TweetCreate, session: AsyncSession = Depends(db_helper.session_dependency)
+    tweet_in: TweetIn, session: AsyncSession = Depends(db_helper.session_dependency)
 ):
     return await crud.create_tweet(session=session, tweet_in=tweet_in)
 

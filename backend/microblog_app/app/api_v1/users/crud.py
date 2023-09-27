@@ -60,14 +60,20 @@ async def get_user(session: AsyncSession, user_id: int) -> User | None:
     return await session.get(User, user_id)
 
 
-def get_user_data(
-    user: User,
+async def get_user_data(
+    idx: int,
     followers: List[User],
     following: List[User],
+    session: AsyncSession,
 ) -> JSONResponse:
-    response_data: json = {"result": True}
-    response_data["user"].update(jsonable_encoder(user))
-    response_data["user"]["followers"].update(jsonable_encoder(followers))
-    response_data["following"].update(jsonable_encoder(following))
+    user: User = await get_user(session=session, user_id=idx)
+    users_dict = jsonable_encoder(user)
+
+    users_dict["followers"] = jsonable_encoder(followers)
+    response_data = {
+        "result": True,
+        "user": users_dict,
+        "following": jsonable_encoder(following),
+    }
 
     return JSONResponse(content=response_data)

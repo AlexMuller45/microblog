@@ -10,7 +10,7 @@ from sqlalchemy.orm import joinedload, selectinload
 from auth.secure import get_user_id
 from core.models import Follow, Tweet
 
-from .schemas import TweetCreate
+from .schemas import TweetCreate, TweetIn
 
 
 async def get_tweet(session: AsyncSession, tweet_id: int) -> Tweet | None:
@@ -46,8 +46,15 @@ async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
     return list(tweets)
 
 
-async def create_tweet(session: AsyncSession, tweet_in: TweetCreate) -> JSONResponse:
-    tweet = Tweet(**tweet_in.model_dump())
+async def create_tweet(session: AsyncSession, tweet_in: TweetIn) -> JSONResponse:
+    current_user_id = await get_user_id(session=session)
+    tweet = Tweet(
+        content=tweet_in["tweet_data"],
+        author=current_user_id,
+        attachments=map(str, tweet_in["tweet_media_ids"]),
+        views=0,
+    )
+
     session.add(tweet)
     await session.commit()
     await session.refresh(tweet)

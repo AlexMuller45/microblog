@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class Like(Base):
     name: Mapped[str]
     user_id: Mapped[int] = mapped_column(ForeignKey("users_tab.id"))
-    tweet_id: Mapped[int] = mapped_column(ForeignKey("users_tab.id"))
+    tweet_id: Mapped[int] = mapped_column(ForeignKey("tweets_tab.id"))
 
     tweet: Mapped["Tweet"] = relationship(back_populates="likes")
 
