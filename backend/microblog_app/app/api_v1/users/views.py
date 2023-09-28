@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import JSONResponse
 
 from . import crud
 from api_v1.users.schemas import FollowAdd, FollowDelete, UserData
@@ -41,7 +42,7 @@ async def get_user_by_id(
     following: List[User] = Depends(get_following),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
-    await crud.get_user_data(
+    return await crud.get_user_data(
         idx=idx, followers=followers, following=following, session=session
     )
 

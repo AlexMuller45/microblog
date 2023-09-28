@@ -20,7 +20,7 @@ class Following(BaseModel):
 
 
 class UserInfo(User):
-    followers: Optional[List[User]]
+    followers: List[User]
 
 
 class UserData(BaseModel):

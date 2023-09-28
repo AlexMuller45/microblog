@@ -23,37 +23,37 @@ async def get_follow(
     return follow
 
 
-async def get_following(session: AsyncSession, user_id: int) -> List[User] | None:
+async def get_following(session: AsyncSession, user_id: int) -> List[User]:
     subq = select(Follow.follow_user_id).where(Follow.user_id == user_id).subquery()
     stmt = select(User).where(User.id.in_(subq)).order_by(User.id)
     result: Result = await session.execute(stmt)
     following = result.scalars().all()
-    return list(following)
+    return following
 
 
-async def get_followers(session: AsyncSession, user_id: int) -> List[User] | None:
+async def get_followers(session: AsyncSession, user_id: int) -> List[User]:
     subq = select(Follow.user_id).where(Follow.follow_user_id == user_id).subquery()
     stmt = select(User).where(User.id.in_(subq)).order_by(User.id)
     result: Result = await session.execute(stmt)
     followers = result.scalars().all()
-    return list(followers)
+    return followers
 
 
-async def create_follow(session: AsyncSession, follow_user_id: int) -> JSONResponse:
+async def create_follow(session: AsyncSession, follow_user_id: int) -> dict[str, bool]:
     current_user_id = await get_user_id(session)
     follow = Follow(user_id=current_user_id, follow_user_id=follow_user_id)
 
     session.add(follow)
     await session.commit()
 
-    return JSONResponse(content={"result": True})
+    return {"result": True}
 
 
-async def delete_follow(session: AsyncSession, follow: Follow) -> JSONResponse:
+async def delete_follow(session: AsyncSession, follow: Follow) -> dict[str, bool]:
     await session.delete(follow)
     await session.commit()
 
-    return JSONResponse(content={"result": True})
+    return {"result": True}
 
 
 async def get_user(session: AsyncSession, user_id: int) -> User | None:
