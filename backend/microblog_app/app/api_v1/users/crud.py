@@ -1,10 +1,12 @@
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Type, Union
 
 from fastapi.encoders import jsonable_encoder
+from fastapi import Response
 from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
+from starlette.status import HTTP_404_NOT_FOUND
 
 from auth.secure import get_user_id
 from core.models import Follow, User
@@ -56,8 +58,20 @@ async def delete_follow(session: AsyncSession, follow: Follow) -> dict[str, bool
     return {"result": True}
 
 
-async def get_user(session: AsyncSession, user_id: int) -> User | None:
-    return await session.get(User, user_id)
+async def get_user(session: AsyncSession, user_id: int) -> User | JSONResponse:
+    user: User | None = await session.get(User, user_id)
+
+    if user:
+        return user
+
+    return JSONResponse(
+        content={
+            "result": False,
+            "error_type": "HTTP_404_NOT_FOUND",
+            "error_message": "User not found",
+        },
+        status_code=404,
+    )
 
 
 async def get_user_data(
@@ -65,11 +79,12 @@ async def get_user_data(
     followers: List[User],
     following: List[User],
     session: AsyncSession,
-) -> JSONResponse:
+) -> JSONResponse | dict[str, bool | str]:
     user: User = await get_user(session=session, user_id=idx)
-    users_dict = jsonable_encoder(user)
 
+    users_dict = jsonable_encoder(user)
     users_dict["followers"] = jsonable_encoder(followers)
+
     response_data = {
         "result": True,
         "user": users_dict,

@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import Depends, FastAPI
 
 from api_v1 import router as router_v1

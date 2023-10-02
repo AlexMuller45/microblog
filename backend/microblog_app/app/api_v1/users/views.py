@@ -1,8 +1,9 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
+from starlette.status import HTTP_404_NOT_FOUND
 
 from . import crud
 from api_v1.users.schemas import FollowAdd, FollowDelete, UserData
@@ -13,9 +14,37 @@ from .dependencies import (
     get_user_by_id,
     get_follower,
     get_following,
+    get_my_follower,
+    get_my_following,
 )
 
 router = APIRouter(tags=["Users"])
+
+
+@router.get("/me", response_model=UserData)
+async def get_me(
+    response: Response,
+    session: AsyncSession = Depends(db_helper.session_dependency),
+):
+    user_id: int | None = await get_user_id(session=session)
+
+    if user_id is None:
+        response.status_code = HTTP_404_NOT_FOUND
+        return {
+            "result": False,
+            "error_type": "HTTP_404_NOT_FOUND",
+            "error_message": "User not found",
+        }
+
+    followers: List[User] = await get_my_follower(user_id=user_id, session=session)
+    following: List[User] = await get_my_following(user_id=user_id, session=session)
+
+    return await crud.get_user_data(
+        idx=user_id,
+        followers=followers,
+        following=following,
+        session=session,
+    )
 
 
 @router.post("/{idx}/follow", response_model=FollowAdd)
@@ -43,10 +72,8 @@ async def get_user_by_id(
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
     return await crud.get_user_data(
-        idx=idx, followers=followers, following=following, session=session
+        idx=idx,
+        followers=followers,
+        following=following,
+        session=session,
     )
-
-
-@router.get("/me", response_model=UserData)
-def get_me(session: AsyncSession = Depends(db_helper.session_dependency)):
-    ...

@@ -1,13 +1,13 @@
 import json
 from typing import Optional
 
-from fastapi import Depends, HTTPException, Security
+from fastapi import Depends, HTTPException, Security, Response
 from fastapi.security.api_key import APIKeyHeader
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
-from starlette.status import HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+from starlette.status import HTTP_403_FORBIDDEN
 
 from core.models import User, db_helper
 
@@ -20,43 +20,60 @@ async def check_user(
 ) -> bool | JSONResponse:
     stmt = select(User).where(User.api_key == api_key)
     result: Result = await session.execute(stmt)
-    user = result.scalars().one_or_none()
+    user = result.scalar_one_or_none()
 
     if user:
         return True
 
-    response_json: json = {
-        "result": False,
-        "error_type": "HTTP_403_FORBIDDEN",
-        "error_message": "Could not validate API KEY",
-    }
-    return JSONResponse(content=response_json)
+    response = JSONResponse(
+        content={
+            "result": False,
+            "error_type": "HTTP_403_FORBIDDEN",
+            "error_message": "Could not validate API KEY",
+        },
+        status_code=HTTP_403_FORBIDDEN,
+    )
+    return response
 
 
 async def get_user_id(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-    api_key: str = Security(api_key_header),
+    api_key: str = Depends(api_key_header),
 ) -> int | JSONResponse:
-    stmt = select(User.id).where(User.api_key == api_key)
+    stmt = select(User).where(User.api_key == api_key)
     result: Result = await session.execute(stmt)
-    user_id = result.scalars().one_or_none()
+    user = result.scalar_one_or_none()
 
-    if user_id:
-        return int(user_id)
+    if user:
+        return int(user.id)
 
-    response_json: json = {
-        "result": False,
-        "error_type": "HTTP_404_NOT_FOUND",
-        "error_message": "User not found",
-    }
-    return JSONResponse(content=response_json)
+    response = JSONResponse(
+        content={
+            "result": False,
+            "error_type": "HTTP_403_FORBIDDEN",
+            "error_message": "Could not validate API KEY",
+        },
+        status_code=HTTP_403_FORBIDDEN,
+    )
+    return response
 
 
 async def get_user(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
     api_key: str = Security(api_key_header),
-) -> User:
+) -> User | JSONResponse:
     stmt = select(User).where(User.api_key == api_key)
     result: Result = await session.execute(stmt)
-    user = result.scalars().one()
-    return user
+    user = result.scalar_one_or_none()
+    if user:
+        return user
+
+    response = JSONResponse(
+        content={
+            "result": False,
+            "error_type": "HTTP_403_FORBIDDEN",
+            "error_message": "Could not validate API KEY",
+        },
+        status_code=HTTP_403_FORBIDDEN,
+    )
+    return response
