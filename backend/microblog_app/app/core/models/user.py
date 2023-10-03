@@ -1,16 +1,13 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models.base import Base
-
-if TYPE_CHECKING:
-    from .follow import Follow
 
 
 class User(Base):
     name: Mapped[str]
-    api_key: Mapped[str]
+    api_key: Mapped[str] = mapped_column(unique=True)
     followers: Mapped[list] = []
 
     def __repr__(self) -> str:
