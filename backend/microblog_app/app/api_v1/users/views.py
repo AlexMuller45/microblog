@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, Response
+from fastapi import APIRouter, Depends, Header
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_404_NOT_FOUND
@@ -23,18 +23,10 @@ router = APIRouter(tags=["Users"])
 
 @router.get("/me", response_model=UserData)
 async def get_me(
-    response: Response,
+    api_key: str = Header(),
     session: AsyncSession = Depends(db_helper.session_dependency),
 ):
-    user_id: int | None = await get_user_id(session=session)
-
-    if user_id is None:
-        response.status_code = HTTP_404_NOT_FOUND
-        return {
-            "result": False,
-            "error_type": "HTTP_404_NOT_FOUND",
-            "error_message": "User not found",
-        }
+    user_id: int | None = await get_user_id(session=session, api_key=api_key)
 
     followers: List[User] = await get_my_follower(user_id=user_id, session=session)
     following: List[User] = await get_my_following(user_id=user_id, session=session)

@@ -38,7 +38,7 @@ async def check_user(
 
 async def get_user_id(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-    api_key: str = Depends(api_key_header),
+    api_key: str = Security(api_key_header),
 ) -> int | JSONResponse:
     stmt = select(User).where(User.api_key == api_key)
     result: Result = await session.execute(stmt)
