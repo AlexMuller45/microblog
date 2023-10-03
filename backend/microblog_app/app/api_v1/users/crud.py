@@ -25,20 +25,26 @@ async def get_follow(
     return follow
 
 
+def hide_api_key(data: list[User]) -> List[User]:
+    for item in data:
+        item.api_key = "*" * 12
+    return data
+
+
 async def get_following(session: AsyncSession, user_id: int) -> List[User]:
     subq = select(Follow.follow_user_id).where(Follow.user_id == user_id).subquery()
-    stmt = select(User).where(User.id.in_(subq)).order_by(User.id)
+    stmt = select(User).where(User.id.in_(select(subq))).order_by(User.id)
     result: Result = await session.execute(stmt)
-    following = result.scalars().all()
-    return following
+    following = list(result.scalars().all())
+    return hide_api_key(following)
 
 
 async def get_followers(session: AsyncSession, user_id: int) -> List[User]:
     subq = select(Follow.user_id).where(Follow.follow_user_id == user_id).subquery()
-    stmt = select(User).where(User.id.in_(subq)).order_by(User.id)
+    stmt = select(User).where(User.id.in_(select(subq))).order_by(User.id)
     result: Result = await session.execute(stmt)
-    followers = result.scalars().all()
-    return followers
+    followers = list(result.scalars().all())
+    return hide_api_key(followers)
 
 
 async def create_follow(session: AsyncSession, follow_user_id: int) -> dict[str, bool]:
@@ -79,16 +85,14 @@ async def get_user_data(
     followers: List[User],
     following: List[User],
     session: AsyncSession,
-) -> JSONResponse | dict[str, bool | str]:
+) -> json:
     user: User = await get_user(session=session, user_id=idx)
 
-    users_dict = jsonable_encoder(user)
-    users_dict["followers"] = jsonable_encoder(followers)
+    user.api_key = "*" * 12
+    user.followers = followers
 
-    response_data = {
+    return {
         "result": True,
-        "user": users_dict,
-        "following": jsonable_encoder(following),
+        "user": user,
+        "following": following,
     }
-
-    return JSONResponse(content=response_data)

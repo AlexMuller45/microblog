@@ -1,21 +1,15 @@
 from typing import List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 
 class UserBase(BaseModel):
     name: str
-    api_key: str
-
-    class Config:
-        exclude = {"api_key"}
+    api_key: str = Field(exclude=True)
 
 
 class User(UserBase):
     id: int
-
-    class Config:
-        exclude = {"api_key"}
 
 
 class Followers(BaseModel):
@@ -34,9 +28,6 @@ class UserData(BaseModel):
     result: bool = True
     user: UserInfo
     following: List[User]
-
-    class Config:
-        exclude = {"api_key"}
 
 
 class UserResponse(BaseModel):
