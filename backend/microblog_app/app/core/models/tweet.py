@@ -23,7 +23,7 @@ class Tweet(Base):
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
-    # user: Mapped["User"] = relationship(back_populates="tweets")
+    user: Mapped["User"] = relationship(back_populates="tweets")
     medias: Mapped[List["Media"]] = relationship(back_populates="tweet")
 
     def __repr__(self) -> str:

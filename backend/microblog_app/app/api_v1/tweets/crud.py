@@ -24,8 +24,8 @@ async def get_last_tweet_id(session: AsyncSession) -> int:
     return tweet.id
 
 
-async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
-    current_user_id = await get_user_id(session=session)
+async def get_tweets_for_user(session: AsyncSession, api_key: str) -> list[Tweet]:
+    current_user_id = await get_user_id(session=session, api_key=api_key)
     subq = (
         select(Follow.follow_user_id)
         .where(Follow.user_id == current_user_id)
@@ -38,7 +38,7 @@ async def get_tweets_for_user(session: AsyncSession) -> list[Tweet]:
             joinedload(Tweet.user),
             selectinload(Tweet.medias),
         )
-        .where(Tweet.author.in_(subq))
+        .where(Tweet.author.in_(select(subq)))
         .order_by(Tweet.views, Tweet.id)
     )
     result: Result = await session.execute(stmt)

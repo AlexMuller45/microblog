@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
@@ -12,9 +12,13 @@ router = APIRouter(tags=["Tweets"])
 router.include_router(router=likes_router)
 
 
-@router.get("/", response_model=list[Tweet])
-async def get_tweets(session: AsyncSession = Depends(db_helper.session_dependency)):
-    return await crud.get_tweets_for_user(session=session)
+@router.get("/", response_model=list[Tweet], status_code=status.HTTP_200_OK)
+async def get_tweets(
+    request: Request,
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    api_key: str = request.headers.get("api-key")
+    return await crud.get_tweets_for_user(session=session, api_key=api_key)
 
 
 @router.post("/", response_model=TweetCreate)
