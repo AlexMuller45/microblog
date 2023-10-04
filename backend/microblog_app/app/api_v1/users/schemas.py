@@ -36,7 +36,3 @@ class UserResponse(BaseModel):
 
 class FollowAdd(UserResponse):
     ...
-
-
-class FollowDelete(UserResponse):
-    ...

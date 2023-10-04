@@ -1,9 +1,8 @@
 import json
-from typing import List, Dict, Any, Type, Union
+from typing import List
 
-from fastapi.encoders import jsonable_encoder
-from fastapi import Response
-from sqlalchemy import select, Result
+from fastapi import HTTPException
+from sqlalchemy import Result, Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 from starlette.status import HTTP_404_NOT_FOUND
@@ -15,7 +14,7 @@ from core.models import Follow, User
 async def get_follow(
     session: AsyncSession, user_id: int, follow_user_id: int
 ) -> Follow | None:
-    stmt = (
+    stmt: Select = (
         select(Follow)
         .where(Follow.user_id == user_id)
         .where(Follow.follow_user_id == follow_user_id)
@@ -33,7 +32,7 @@ def hide_api_key(data: list[User]) -> List[User]:
 
 async def get_following(session: AsyncSession, user_id: int) -> List[User]:
     subq = select(Follow.follow_user_id).where(Follow.user_id == user_id).subquery()
-    stmt = select(User).where(User.id.in_(select(subq))).order_by(User.id)
+    stmt: Select = select(User).where(User.id.in_(select(subq))).order_by(User.id)
     result: Result = await session.execute(stmt)
     following = list(result.scalars().all())
     return hide_api_key(following)
@@ -41,14 +40,16 @@ async def get_following(session: AsyncSession, user_id: int) -> List[User]:
 
 async def get_followers(session: AsyncSession, user_id: int) -> List[User]:
     subq = select(Follow.user_id).where(Follow.follow_user_id == user_id).subquery()
-    stmt = select(User).where(User.id.in_(select(subq))).order_by(User.id)
+    stmt: Select = select(User).where(User.id.in_(select(subq))).order_by(User.id)
     result: Result = await session.execute(stmt)
     followers = list(result.scalars().all())
     return hide_api_key(followers)
 
 
-async def create_follow(session: AsyncSession, follow_user_id: int) -> dict[str, bool]:
-    current_user_id = await get_user_id(session)
+async def create_follow(
+    session: AsyncSession, follow_user_id: int, api_key: str
+) -> dict[str, bool]:
+    current_user_id = await get_user_id(session=session, api_key=api_key)
     follow = Follow(user_id=current_user_id, follow_user_id=follow_user_id)
 
     session.add(follow)
@@ -70,13 +71,9 @@ async def get_user(session: AsyncSession, user_id: int) -> User | JSONResponse:
     if user:
         return user
 
-    return JSONResponse(
-        content={
-            "result": False,
-            "error_type": "HTTP_404_NOT_FOUND",
-            "error_message": "User not found",
-        },
-        status_code=404,
+    raise HTTPException(
+        status_code=HTTP_404_NOT_FOUND,
+        detail="User not found",
     )
 
 

@@ -1,35 +1,33 @@
-import json
 from typing import Annotated, List
 
-from fastapi import Path, Depends
-from fastapi.encoders import jsonable_encoder
+from fastapi import Depends, Path, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
+from starlette.status import HTTP_404_NOT_FOUND
 
 from auth.secure import get_user_id
-from core.models import db_helper, Follow, User
+from core.models import Follow, User, db_helper
+
 from . import crud
 
 
 async def get_follow_by_user_id(
+    request: Request,
     idx: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> Follow:
-    current_user_id = await get_user_id(session=session)
+    api_key: str = request.headers.get("api-key")
+    current_user_id = await get_user_id(session=session, api_key=api_key)
     follow = await crud.get_follow(
         session=session, user_id=current_user_id, follow_user_id=idx
     )
     if follow:
         return follow
 
-    # response_json: json = jsonable_encoder(
-    #     {
-    #         "result": False,
-    #         "error_type": "HTTP_404_NOT_FOUND",
-    #         "error_message": "The subscription is not found",
-    #     }
-    # )
-    # return JSONResponse(content=response_json)
+    raise HTTPException(
+        status_code=HTTP_404_NOT_FOUND,
+        detail=f"The subscription #ID[{idx}] is not found",
+    )
 
 
 async def get_user_by_id(
@@ -40,18 +38,15 @@ async def get_user_by_id(
     if user:
         return user
 
-    return JSONResponse(
-        content={
-            "result": False,
-            "error_type": "HTTP_404_NOT_FOUND",
-            "error_message": f"The user #ID[{idx}] is not found",
-        }
+    raise HTTPException(
+        status_code=HTTP_404_NOT_FOUND,
+        detail=f"The user #ID[{idx}] is not found",
     )
 
 
 async def get_follower(
     idx: Annotated[int, Path],
-    session: AsyncSession = Depends(db_helper.session_dependency),
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> List[User]:
     followers = await crud.get_followers(session=session, user_id=idx)
     if followers:
@@ -61,7 +56,7 @@ async def get_follower(
 
 async def get_following(
     idx: Annotated[int, Path],
-    session: AsyncSession = Depends(db_helper.session_dependency),
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> List[User]:
     following = await crud.get_following(session=session, user_id=idx)
     if following:

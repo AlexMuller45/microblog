@@ -1,7 +1,7 @@
-import aiofiles
 import imghdr
 import json
 
+import aiofiles
 from fastapi import APIRouter, Depends, File, UploadFile
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession

@@ -1,10 +1,5 @@
-from sqlalchemy.orm import (
-    DeclarativeBase,
-    Mapped,
-    declared_attr,
-    mapped_column,
-    sessionmaker,
-)
+from sqlalchemy.orm import (DeclarativeBase, Mapped, declared_attr,
+                            mapped_column, sessionmaker)
 
 
 class Base(DeclarativeBase):

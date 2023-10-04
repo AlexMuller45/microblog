@@ -1,14 +1,16 @@
 import json
 from typing import Annotated
+
 from fastapi import Depends, Path
-from starlette.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import JSONResponse
 
 from auth.secure import get_user_id
 from core.models import Like, db_helper
+
 from . import crud
 
 

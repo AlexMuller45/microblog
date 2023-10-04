@@ -6,7 +6,6 @@ import aiohttp
 
 from core.models import User
 
-
 URL_user: str = "https://random-data-api.com/api/users/random_user"
 
 

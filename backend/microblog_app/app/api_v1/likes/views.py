@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from . import crud
 from api_v1.likes.schemas import LikeAdd, LikeDelete
-from core.models import db_helper, Like
+from core.models import Like, db_helper
+
+from . import crud
 from .dependencies import get_like_by_tweet_id
 
 router = APIRouter(tags=["Likes"])
