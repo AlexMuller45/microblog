@@ -50,6 +50,7 @@ async def create_follow(
     session: AsyncSession, follow_user_id: int, api_key: str
 ) -> dict[str, bool]:
     current_user_id = await get_user_id(session=session, api_key=api_key)
+
     follow = Follow(user_id=current_user_id, follow_user_id=follow_user_id)
 
     session.add(follow)
