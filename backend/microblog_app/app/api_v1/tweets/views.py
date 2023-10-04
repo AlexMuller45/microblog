@@ -21,11 +21,18 @@ async def get_tweets(
     return await crud.get_tweets_for_user(session=session, api_key=api_key)
 
 
-@router.post("/", response_model=TweetCreate)
+@router.post("/", response_model=TweetCreate, status_code=status.HTTP_201_CREATED)
 async def add_tweet(
-    tweet_in: TweetIn, session: AsyncSession = Depends(db_helper.session_dependency)
+    request: Request,
+    tweet_in: TweetIn,
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    return await crud.create_tweet(session=session, tweet_in=tweet_in)
+    api_key: str = request.headers.get("api-key")
+    return await crud.create_tweet(
+        session=session,
+        tweet_in=tweet_in,
+        api_key=api_key,
+    )
 
 
 @router.delete("/{idx}", response_model=TweetDelete)

@@ -46,12 +46,16 @@ async def get_tweets_for_user(session: AsyncSession, api_key: str) -> list[Tweet
     return list(tweets)
 
 
-async def create_tweet(session: AsyncSession, tweet_in: TweetIn) -> JSONResponse:
-    current_user_id = await get_user_id(session=session)
+async def create_tweet(
+    session: AsyncSession,
+    tweet_in: TweetIn,
+    api_key: str,
+) -> JSONResponse:
+    current_user_id = await get_user_id(session=session, api_key=api_key)
     tweet = Tweet(
-        content=tweet_in["tweet_data"],
+        content=tweet_in.tweet_data,
+        attachments=tweet_in.tweet_media_ids,
         author=current_user_id,
-        attachments=map(str, tweet_in["tweet_media_ids"]),
         views=0,
     )
 
@@ -59,8 +63,7 @@ async def create_tweet(session: AsyncSession, tweet_in: TweetIn) -> JSONResponse
     await session.commit()
     await session.refresh(tweet)
 
-    response_json: json = {"result": True, "tweet_id": tweet.id}
-    return JSONResponse(content=response_json)
+    return JSONResponse(content={"result": True, "tweet_id": tweet.id})
 
 
 async def delete_tweet(session: AsyncSession, tweet: Tweet) -> JSONResponse:
