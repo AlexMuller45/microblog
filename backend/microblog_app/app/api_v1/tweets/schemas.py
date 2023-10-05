@@ -26,8 +26,4 @@ class TweetCreate(BaseModel):
 
 class TweetIn(BaseModel):
     tweet_data: str
-    tweet_media_ids: Optional[List[str]] = None
-
-
-class TweetDelete(BaseModel):
-    result: bool = True
+    tweet_media_ids: Optional[List[int]] = None

@@ -54,7 +54,7 @@ async def create_tweet(
     current_user_id = await get_user_id(session=session, api_key=api_key)
     tweet = Tweet(
         content=tweet_in.tweet_data,
-        attachments=tweet_in.tweet_media_ids,
+        attachments=map(str, tweet_in.tweet_media_ids),
         author=current_user_id,
         views=0,
     )
@@ -66,9 +66,8 @@ async def create_tweet(
     return JSONResponse(content={"result": True, "tweet_id": tweet.id})
 
 
-async def delete_tweet(session: AsyncSession, tweet: Tweet) -> JSONResponse:
+async def delete_tweet(session: AsyncSession, tweet: Tweet) -> dict[str, bool]:
     await session.delete(tweet)
     await session.commit()
 
-    response_json: json = jsonable_encoder({"result": True})
-    return JSONResponse(content=response_json)
+    return {"result": True}

@@ -6,7 +6,7 @@ from core.models import db_helper
 from ..likes.views import router as likes_router
 from . import crud
 from .dependencies import tweet_by_id
-from .schemas import Tweet, TweetCreate, TweetDelete, TweetIn
+from .schemas import Tweet, TweetCreate, TweetIn
 
 router = APIRouter(tags=["Tweets"])
 router.include_router(router=likes_router)
@@ -35,9 +35,12 @@ async def add_tweet(
     )
 
 
-@router.delete("/{idx}", response_model=TweetDelete)
+@router.delete(
+    "/{idx}",
+    status_code=status.HTTP_200_OK,
+)
 async def delete_tweet(
     tweet: Tweet = Depends(tweet_by_id),
-    session: AsyncSession = Depends(db_helper.session_dependency),
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    await crud.delete_tweet(session=session, tweet=tweet)
+    return await crud.delete_tweet(session=session, tweet=tweet)
