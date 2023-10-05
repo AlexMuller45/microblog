@@ -8,7 +8,6 @@ from core.models.base import Base
 
 if TYPE_CHECKING:
     from .like import Like
-    from .media import Media
     from .user import User
 
 
@@ -24,7 +23,6 @@ class Tweet(Base):
         passive_deletes=True,
     )
     user: Mapped["User"] = relationship(back_populates="tweets")
-    medias: Mapped[List["Media"]] = relationship(back_populates="tweet")
 
     def __repr__(self) -> str:
         return f"id: {self.id}, content: {self.content}, author: {self.author}"

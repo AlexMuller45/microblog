@@ -1,42 +1,40 @@
 import imghdr
-import json
-
 import aiofiles
-from fastapi import APIRouter, Depends, File, UploadFile
-from fastapi.encoders import jsonable_encoder
+from fastapi import APIRouter, Depends, File, UploadFile, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.responses import JSONResponse
 
 from core.config import settings
 from core.models import db_helper
 
 from . import crud
-from .schemas import MediaAdd
 
 router = APIRouter(tags=["Medias"])
 
 
-@router.post("/", response_model=MediaAdd)
+@router.post(
+    "/",
+    status_code=status.HTTP_201_CREATED,
+)
 async def add_media(
-    file: UploadFile = File(...),
-    session: AsyncSession = Depends(db_helper.session_dependency),
+    in_file: UploadFile = File(...),
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    if not imghdr.what(file.filename):
-        response_json: json = jsonable_encoder(
-            {
-                "result": False,
-                "error_type": "HTTP_415_UNSUPPORTED_MEDIA_TYPE",
-                "error_message": "The file is not an image",
-            }
+    if not in_file:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="No file sent"
         )
-        return JSONResponse(content=response_json)
+    if not imghdr.what(in_file.file):
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="The file is not an image",
+        )
 
-    media_id: int = await crud.add_media(session=session, file_name=file.filename)
-    file_path = f"{settings.media_path}/{media_id}"
+    media_id: int = await crud.add_media(session=session, file_name=in_file.filename)
+    file_path = f"{settings.media_path}/{media_id}__{in_file.filename}"
 
     async with aiofiles.open(file_path, "wb") as out_file:
-        content = await file.read()
-        await out_file.write(content)
+        await out_file.write(in_file.file.read())
 
-    response_json: json = jsonable_encoder({"result": True, "media_id": media_id})
-    return JSONResponse(content=response_json)
+    return {"result": True, "media_id": media_id}
+
+

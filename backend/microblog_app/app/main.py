@@ -1,6 +1,7 @@
 # from typing import List
 
 from fastapi import Depends, FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
 # from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +16,12 @@ app = FastAPI()
 app.include_router(
     router_v1, prefix=settings.api_v1_prefix, dependencies=[Depends(check_user)]
 )
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_methods=["POST", "GET", "DELETE"],
+#     allow_headers=["*"],
+# )
 
 
 @app.get("/")
