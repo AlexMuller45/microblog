@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, computed_field
 
 class UserBase(BaseModel):
     name: str
-    api_key: str = Field(exclude=True)
+    # api_key: str = Field(exclude=True)
 
 
 class User(UserBase):

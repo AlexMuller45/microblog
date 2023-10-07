@@ -25,4 +25,10 @@ class Tweet(Base):
     user: Mapped["User"] = relationship(back_populates="tweets")
 
     def __repr__(self) -> str:
-        return f"id: {self.id}, content: {self.content}, author: {self.author}"
+        return (
+            f"id: {self.id}, "
+            f"content: {self.content}, "
+            f"author: {self.author}, "
+            f"attachments: {self.attachments}, "
+            f"likes: {self.likes}"
+        )

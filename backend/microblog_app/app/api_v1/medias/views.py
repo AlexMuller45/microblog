@@ -36,5 +36,3 @@ async def add_media(
         await out_file.write(in_file.file.read())
 
     return {"result": True, "media_id": media_id}
-
-

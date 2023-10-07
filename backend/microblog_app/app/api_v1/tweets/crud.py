@@ -1,16 +1,19 @@
 import json
+from typing import Dict
 
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, selectinload
+from sqlalchemy.orm import joinedload, selectinload, InstrumentedAttribute
+from sqlalchemy.orm.base import _T_co
 
 from auth.secure import get_user_id
 from core.models import Follow, Tweet
 
 from .schemas import TweetCreate, TweetIn
+from .servises import get_attachments
 
 
 async def get_tweet(session: AsyncSession, tweet_id: int) -> Tweet | None:
@@ -36,7 +39,6 @@ async def get_tweets_for_user(session: AsyncSession, api_key: str) -> list[Tweet
         .options(
             selectinload(Tweet.likes),
             joinedload(Tweet.user),
-            selectinload(Tweet.medias),
         )
         .where(Tweet.author.in_(select(subq)))
         .order_by(Tweet.views, Tweet.id)
@@ -50,11 +52,12 @@ async def create_tweet(
     session: AsyncSession,
     tweet_in: TweetIn,
     api_key: str,
-) -> JSONResponse:
+) -> dict[str, bool]:
     current_user_id = await get_user_id(session=session, api_key=api_key)
+    attachments = get_attachments(data=tweet_in.tweet_media_ids)
     tweet = Tweet(
         content=tweet_in.tweet_data,
-        attachments=map(str, tweet_in.tweet_media_ids),
+        attachments=attachments,
         author=current_user_id,
         views=0,
     )
@@ -63,7 +66,7 @@ async def create_tweet(
     await session.commit()
     await session.refresh(tweet)
 
-    return JSONResponse(content={"result": True, "tweet_id": tweet.id})
+    return {"result": True, "tweet_id": tweet.id}
 
 
 async def delete_tweet(session: AsyncSession, tweet: Tweet) -> dict[str, bool]:

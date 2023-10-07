@@ -11,7 +11,7 @@ class TweetBase(BaseModel):
     content: str
     attachments: Optional[List[str]]
     author: User
-    likes: List[Like]
+    likes: Optional[List[Like]]
 
 
 class Tweet(BaseModel):
