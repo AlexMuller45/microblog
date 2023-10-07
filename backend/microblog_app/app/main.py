@@ -1,7 +1,10 @@
 # from typing import List
 
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, HTTPException, status, Request
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
+from starlette.responses import JSONResponse
 
 # from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -22,6 +25,30 @@ app.include_router(
 #     allow_methods=["POST", "GET", "DELETE"],
 #     allow_headers=["*"],
 # )
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "result": False,
+            "error_type": exc.status_code,
+            "error_message": str(exc.detail),
+        },
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS,
+        content={
+            "result": False,
+            "error_type": status.HTTP_451_UNAVAILABLE_FOR_LEGAL_REASONS,
+            "error_message": exc.errors(),
+        },
+    )
 
 
 @app.get("/")
