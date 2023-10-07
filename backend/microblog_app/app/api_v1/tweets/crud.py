@@ -1,13 +1,7 @@
-import json
-from typing import Dict
-
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, selectinload, InstrumentedAttribute
-from sqlalchemy.orm.base import _T_co
+from sqlalchemy.orm import joinedload, selectinload
 
 from auth.secure import get_user_id
 from core.models import Follow, Tweet
@@ -28,7 +22,7 @@ async def get_last_tweet_id(session: AsyncSession) -> int:
 
 
 async def get_tweets_for_user(session: AsyncSession, api_key: str) -> list[Tweet]:
-    current_user_id = await get_user_id(session=session, api_key=api_key)
+    current_user_id: int = await get_user_id(session=session, api_key=api_key)
     subq = (
         select(Follow.follow_user_id)
         .where(Follow.user_id == current_user_id)
@@ -38,13 +32,13 @@ async def get_tweets_for_user(session: AsyncSession, api_key: str) -> list[Tweet
         select(Tweet)
         .options(
             selectinload(Tweet.likes),
-            joinedload(Tweet.user),
+            joinedload(Tweet.author),
         )
-        .where(Tweet.author.in_(select(subq)))
+        .where(Tweet.author_id.in_(select(subq)))
         .order_by(Tweet.views, Tweet.id)
     )
     result: Result = await session.execute(stmt)
-    tweets = result.scalars().all()
+    tweets = result.scalars()
     return list(tweets)
 
 
@@ -58,7 +52,7 @@ async def create_tweet(
     tweet = Tweet(
         content=tweet_in.tweet_data,
         attachments=attachments,
-        author=current_user_id,
+        author_id=current_user_id,
         views=0,
     )
 

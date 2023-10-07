@@ -66,7 +66,7 @@ async def delete_follow(session: AsyncSession, follow: Follow) -> dict[str, bool
     return {"result": True}
 
 
-async def get_user(session: AsyncSession, user_id: int) -> User | JSONResponse:
+async def get_user(session: AsyncSession, user_id: int) -> User:
     user: User | None = await session.get(User, user_id)
 
     if user:

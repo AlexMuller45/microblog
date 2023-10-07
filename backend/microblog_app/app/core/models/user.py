@@ -12,7 +12,7 @@ class User(Base):
     api_key: Mapped[str] = mapped_column(unique=True)
     followers: Mapped[list] = []
 
-    tweets: Mapped[List["Tweet"]] = relationship(back_populates="user")
+    tweets: Mapped[List["Tweet"]] = relationship(back_populates="author")
 
     def __repr__(self) -> str:
         return f"user_id: {self.id}, name: {self.name}"

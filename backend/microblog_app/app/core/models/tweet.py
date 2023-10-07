@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class Tweet(Base):
     content: Mapped[str]
-    author: Mapped[int] = mapped_column(ForeignKey("users_tab.id"))
+    author_id: Mapped[int] = mapped_column(ForeignKey("users_tab.id"))
     attachments: Mapped[List[str] | None] = mapped_column(ARRAY(String))
     views: Mapped[int]
 
@@ -22,7 +22,7 @@ class Tweet(Base):
         cascade="all, delete-orphan",
         passive_deletes=True,
     )
-    user: Mapped["User"] = relationship(back_populates="tweets")
+    author: Mapped["User"] = relationship(back_populates="tweets")
 
     def __repr__(self) -> str:
         return (
