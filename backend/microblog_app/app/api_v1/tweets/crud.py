@@ -41,9 +41,16 @@ async def get_tweets_for_user(session: AsyncSession, api_key: str) -> list[Tweet
         .where(Tweet.author_id.in_(select(subq)))
         .order_by(Tweet.views, Tweet.id)
     )
+
     result: Result = await session.execute(stmt)
-    tweets_data = result.scalars()
-    return list(tweets_data)
+    tweets: list[Tweet] = list(result.scalars())
+
+    for tweet in tweets:
+        tweet.views += 1
+
+    await session.commit()
+
+    return tweets
 
 
 async def create_tweet(
