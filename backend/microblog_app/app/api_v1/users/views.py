@@ -1,9 +1,11 @@
-from typing import List, Annotated
+"""Роуты для User"""
+
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.users.schemas import FollowAdd, UserData
+from api_v1.users.schemas import FollowAdd, UserData, UserResponse
 from auth.secure import get_user_id
 from core.models import Follow, User, db_helper
 
@@ -28,6 +30,18 @@ async def get_me(
     request: Request,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """
+    Получение данных для текущего аутентифицированного пользователя.
+
+    Args:
+        request (Request): Объект запроса FastAPI.
+        session (AsyncSession): Асинхронный сеанс SQLAlchemy.
+
+    Returns:
+        UserData: Пользовательские данные для текущего аутентифицированного пользователя.
+
+    """
+
     api_key: str = request.headers.get("api-key")
     user_id: int | None = await get_user_id(session=session, api_key=api_key)
 
@@ -52,6 +66,19 @@ async def add_follow(
     idx: int,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """
+    Добавление подписки к текущему аутентифицированному пользователю.
+
+    Args:
+        request (Request): Объект запроса FastAPI.
+        idx(int): ID пользователя на которого добавляется подписка.
+        session (AsyncSession): Асинхронный сеанс SQLAlchemy.
+
+    Returns:
+        dict[str, bool]: {"result": True}
+
+    """
+
     api_key: str = request.headers.get("api-key")
     return await crud.create_follow(
         session=session, follow_user_id=idx, api_key=api_key
@@ -60,6 +87,7 @@ async def add_follow(
 
 @router.delete(
     "/{idx}/follow",
+    response_model=UserResponse,
     status_code=status.HTTP_200_OK,
 )
 async def delete_follow(
@@ -67,6 +95,18 @@ async def delete_follow(
     follow: Follow = Depends(get_follow_by_user_id),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """
+    Удаление подписки у текущему аутентифицированному пользователя.
+
+    Args:
+        request (Request): Объект запроса FastAPI.
+        follow(Follow): Экземпляр Follow, который удаляется
+        session (AsyncSession): Асинхронный сеанс SQLAlchemy.
+
+    Returns:
+        dict[str, bool]: {"result": True}
+
+    """
     return await crud.delete_follow(session=session, follow=follow)
 
 
@@ -81,6 +121,20 @@ async def get_user_by_id(
     following: List[User] = Depends(get_following),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """
+    Получение данных для пользователя с указанным идентификатором.
+
+    Args:
+        idx (int): Идентификатор пользователя, которого требуется получить.
+        followers (List[User]): Список подписчиков. Для получения используется зависимость get_follower.
+        following (List[User]): Список подписок пользователя. Для получения используется зависимость get_following.
+        session (AsyncSession): Объект SQLAlchemy AsyncSession.
+
+    Returns:
+        UserData: Данные пользователя с указанным идентификатором.
+
+    """
+
     return await crud.get_user_data(
         idx=idx,
         followers=followers,

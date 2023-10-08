@@ -1,3 +1,5 @@
+"""Модель твита"""
+
 from typing import TYPE_CHECKING, List
 
 from sqlalchemy import ForeignKey, String
@@ -12,6 +14,22 @@ if TYPE_CHECKING:
 
 
 class Tweet(Base):
+    """
+    Модель твита.
+
+    Эта модель представляет собой твит, который содержит контент, вложения, ведется учет просмотров.
+    Установлена связь с автором и лайками.
+
+    Attributes:
+        content (Mapped[str]): Содержание твита.
+        author_id (Mapped[int]): Идентификатор пользователя, написавшего твит.
+        attachments (Mapped[List[str] | None]): Вложения (если есть), связанные с твитом.
+        views (Mapped[int]): Количество просмотров твита.
+        likes (Mapped[List["Like"] | None]): Количество лайков, полученных этим твитом.
+        author (Mapped["User"]): Связь с моделью User, представляющей автора твита.
+
+    """
+
     content: Mapped[str]
     author_id: Mapped[int] = mapped_column(ForeignKey("users_tab.id"))
     attachments: Mapped[List[str] | None] = mapped_column(ARRAY(String))

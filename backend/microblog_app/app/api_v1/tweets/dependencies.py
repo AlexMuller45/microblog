@@ -1,3 +1,5 @@
+"""Зависимости для Tweet"""
+
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Path, status
@@ -13,6 +15,21 @@ async def tweet_by_id(
     idx: Annotated[int, Path()],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> Tweet:
+    """
+    Получение твита по ID
+
+    Args:
+        idx (Annotated[int, Path]): Идентификатор твита из пути.
+        session (AsyncSession): Асинхронный сеанс SQLAlchemy.
+
+    Returns:
+         Tweet: Экземпляр Tweet
+
+    Raises:
+        HTTPException: Если tweet не найден, вызывает HTTPException с кодом состояния 404.
+
+    """
+
     tweet = await crud.get_tweet(session=session, tweet_id=idx)
 
     if tweet:

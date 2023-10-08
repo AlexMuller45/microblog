@@ -1,24 +1,19 @@
-# from typing import List
+""" Основной модуль """
 
-from fastapi import Depends, FastAPI, HTTPException, status, Request
-from fastapi.encoders import jsonable_encoder
+from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
-
-# from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1 import router as router_v1
 from auth.secure import check_user
 from core.config import settings
 
-# from core.models import User, db_helper
-# from fill_db import get_users
-
 app = FastAPI()
 app.include_router(
     router_v1, prefix=settings.api_v1_prefix, dependencies=[Depends(check_user)]
 )
+
 # app.add_middleware(
 #     CORSMiddleware,
 #     allow_origins=["*"],
@@ -27,6 +22,7 @@ app.include_router(
 # )
 
 
+# Переопределение ответов на ошибки
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
@@ -53,18 +49,5 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 @app.get("/")
 def index():
+    """Тестовый роут"""
     return {"message": "Hello world!"}
-
-
-# @app.post("/fill_users_tab")
-# async def process_users(session: AsyncSession = Depends(db_helper.session_dependency)):
-#     users: List[User] = await get_users()
-#
-#     session.add_all(users)
-#     await session.commit()
-#
-#     return {
-#         "result": True,
-#         "message": "Users processed successfully",
-#         "status_code": 201,
-#     }

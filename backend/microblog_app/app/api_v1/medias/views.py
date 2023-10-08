@@ -1,6 +1,9 @@
+"""Роуты для Media"""
+
 import imghdr
+
 import aiofiles
-from fastapi import APIRouter, Depends, File, UploadFile, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
@@ -21,6 +24,21 @@ async def add_media(
     in_file: UploadFile = File(...),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """
+    Добавление файла.
+
+    Args:
+        in_file (UploadFile): Входящий файл.
+        session (AsyncSession): Асинхронный сеанс SQLAlchemy.
+
+    Returns:
+        dict: {"result": True, "media_id": media_id}.
+
+    Raises:
+        HTTPException: Если файл не отправлен или файл не является изображением.
+
+    """
+
     if not in_file:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="No file sent"
