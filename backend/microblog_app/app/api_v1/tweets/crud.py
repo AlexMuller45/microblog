@@ -52,7 +52,8 @@ async def create_tweet(
     api_key: str,
 ) -> dict[str, bool]:
     current_user_id = await get_user_id(session=session, api_key=api_key)
-    attachments = get_attachments(data=tweet_in.tweet_media_ids)
+    attachments = await get_attachments(session=session, data=tweet_in.tweet_media_ids)
+
     tweet = Tweet(
         content=tweet_in.tweet_data,
         attachments=attachments,

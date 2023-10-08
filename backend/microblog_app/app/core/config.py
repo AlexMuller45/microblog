@@ -22,6 +22,7 @@ class Setting(BaseSettings):
     pgadmin_default_password: str
     pgadmin_listen_port: int
     media_path: str = f"{BASE_DIR}/app/media"
+    filename: str = "{media_id}__{in_file_name}"
 
 
 settings = Setting()

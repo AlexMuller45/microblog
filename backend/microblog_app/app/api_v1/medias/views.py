@@ -7,6 +7,7 @@ from core.config import settings
 from core.models import db_helper
 
 from . import crud
+from .schemas import MediaAdd
 
 router = APIRouter(tags=["Medias"])
 
@@ -14,6 +15,7 @@ router = APIRouter(tags=["Medias"])
 @router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
+    response_model=MediaAdd,
 )
 async def add_media(
     in_file: UploadFile = File(...),
@@ -30,7 +32,7 @@ async def add_media(
         )
 
     media_id: int = await crud.add_media(session=session, file_name=in_file.filename)
-    file_path = f"{settings.media_path}/{media_id}__{in_file.filename}"
+    file_path = f"{settings.media_path}/{settings.filename.format(media_id=media_id, in_file_name=in_file.filename)}"
 
     async with aiofiles.open(file_path, "wb") as out_file:
         await out_file.write(in_file.file.read())
