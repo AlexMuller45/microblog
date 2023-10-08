@@ -12,13 +12,20 @@ router = APIRouter(tags=["Tweets"])
 router.include_router(router=likes_router)
 
 
-@router.get("/", response_model=list[Tweet], status_code=status.HTTP_200_OK)
+@router.get(
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=Tweet,
+    response_model_exclude={"api_key"},
+)
 async def get_tweets(
     request: Request,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     api_key: str = request.headers.get("api-key")
-    return await crud.get_tweets_for_user(session=session, api_key=api_key)
+    response_data = await crud.get_tweets_for_user(session=session, api_key=api_key)
+
+    return {"result": True, "tweets": response_data}
 
 
 @router.post("/", response_model=TweetCreate, status_code=status.HTTP_201_CREATED)

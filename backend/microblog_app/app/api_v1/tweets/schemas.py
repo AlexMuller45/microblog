@@ -9,9 +9,9 @@ from api_v1.users.schemas import User
 class TweetBase(BaseModel):
     id: int
     content: str
-    attachments: Optional[List[str]]
-    user: User
-    likes: Optional[List[Like]]
+    attachments: Optional[List[str]] = []
+    author: User
+    likes: Optional[List[Like]] = []
 
 
 class Tweet(BaseModel):
