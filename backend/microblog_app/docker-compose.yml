@@ -23,6 +23,8 @@ services:
       postgres -c logging_collector=on
                -c log_directory=/var/log/postgresql
                -c log_destination=stderr
+    networks:
+      - network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -35,6 +37,8 @@ services:
       - "15432:${PGADMIN_LISTEN_PORT}"
     depends_on:
       - postgres
+    networks:
+      - network
 
   frontend:
     image: nginx
@@ -46,6 +50,27 @@ services:
       - "5500:5500"
     volumes:
       - ../../frontend/static:/usr/share/nginx/html/
+    networks:
+      - network
+
+  backend:
+    build:
+      context: ./
+      dockerfile: ./app/Dockerfile
+    command: alembic upgrade head
+    depends_on:
+      - postgres
+    container_name: app
+    restart: unless-stopped
+    stop_signal: SIGKILL
+    ports:
+      - 5500:5500
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
 
 volumes:
   postgres:
