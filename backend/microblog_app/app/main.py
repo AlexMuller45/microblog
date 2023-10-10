@@ -14,12 +14,25 @@ app.include_router(
     router_v1, prefix=settings.api_v1_prefix, dependencies=[Depends(check_user)]
 )
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],
-#     allow_methods=["POST", "GET", "DELETE"],
-#     allow_headers=["*"],
-# )
+
+origins = [
+    "http://localhost:80",
+]
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
+    allow_headers=[
+        "Content-Type",
+        "Set-Cookie",
+        "Access-Control-Allow-Headers",
+        "Access-Control-Allow-Origin",
+        "Authorization",
+    ],
+)
 
 
 # Переопределение ответов на ошибки

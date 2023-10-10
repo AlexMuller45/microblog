@@ -1,4 +1,4 @@
-"""updete relationship User - Tweet
+"""update relationship User - Tweet
 
 Revision ID: e613593a1487
 Revises: 6a7f4b25fc0f
