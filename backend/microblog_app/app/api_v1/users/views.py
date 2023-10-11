@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.schemas import FollowAdd, UserData, UserResponse
-from auth.secure import get_user_id
+from auth.secure import get_user_id, check_user
 from core.models import Follow, User, db_helper
 
 from . import crud
@@ -25,6 +25,7 @@ router = APIRouter(tags=["Users"])
     "/me",
     response_model=UserData,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(check_user)],
 )
 async def get_me(
     request: Request,
@@ -60,6 +61,7 @@ async def get_me(
     "/{idx}/follow",
     response_model=FollowAdd,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(check_user)],
 )
 async def add_follow(
     request: Request,
@@ -89,6 +91,7 @@ async def add_follow(
     "/{idx}/follow",
     response_model=UserResponse,
     status_code=status.HTTP_200_OK,
+    dependencies=[Depends(check_user)],
 )
 async def delete_follow(
     request: Request,

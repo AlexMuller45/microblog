@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from auth.secure import check_user
 from core.config import settings
 from core.models import db_helper
 
@@ -15,6 +16,32 @@ from . import crud
 from .schemas import MediaAdd
 
 router = APIRouter(tags=["Medias"])
+
+
+@router.get("/{image_name}", status_code=status.HTTP_200_OK)
+def get_image(image_name: str) -> FileResponse:
+    """
+    Отправка файла на фронтэнд.
+
+    Args:
+        image_name (str): название испрашиваемого файла.
+
+    Returns:
+        FileResponse
+
+    Raises:
+        HTTPException: Если файл не найден.
+
+    """
+    full_path = f"{settings.media_path}/{image_name}"
+
+    if os.path.isfile(full_path):
+        return FileResponse(full_path)
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="File not found",
+    )
 
 
 @router.post(
@@ -58,16 +85,3 @@ async def add_media(
         await out_file.write(in_file.file.read())
 
     return {"result": True, "media_id": media_id}
-
-
-@router.get("/{image_path}", status_code=status.HTTP_200_OK)
-def get_image(image_path: str) -> FileResponse:
-    full_path = f"{settings.media_path}/{image_path}"
-
-    if os.path.isfile(full_path):
-        return FileResponse(full_path)
-
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="File not found",
-    )

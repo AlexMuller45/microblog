@@ -29,7 +29,7 @@ async def get_media_path(
     media_file_name: str = settings.filename.format(
         media_id=media_id, in_file_name=media.filename
     )
-    return f"/app/media/{media_file_name}"
+    return f"/api/medias/{media_file_name}"
 
 
 async def get_attachments(

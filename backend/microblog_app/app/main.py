@@ -6,13 +6,12 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
 from api_v1 import router as router_v1
+from api_v1.medias.views import router as media_router
 from auth.secure import check_user
 from core.config import settings
 
 app = FastAPI()
-app.include_router(
-    router_v1, prefix=settings.api_v1_prefix, dependencies=[Depends(check_user)]
-)
+app.include_router(router_v1, prefix=settings.api_v1_prefix)
 
 
 origins = [
