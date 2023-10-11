@@ -6,17 +6,12 @@ from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.schemas import FollowAdd, UserData, UserResponse
-from auth.secure import get_user_id, check_user
+from auth.secure import check_user, get_user_id
 from core.models import Follow, User, db_helper
 
 from . import crud
-from .dependencies import (
-    get_follow_by_user_id,
-    get_follower,
-    get_following,
-    get_my_follower,
-    get_my_following,
-)
+from .dependencies import (get_follow_by_user_id, get_follower, get_following,
+                           get_my_follower, get_my_following)
 
 router = APIRouter(tags=["Users"])
 

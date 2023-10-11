@@ -8,7 +8,7 @@ from core.models import db_helper
 from ..likes.views import router as likes_router
 from . import crud
 from .dependencies import tweet_by_id
-from .schemas import Tweet, TweetCreate, TweetIn, TweetDelete
+from .schemas import Tweet, TweetCreate, TweetDelete, TweetIn
 
 router = APIRouter(tags=["Tweets"])
 router.include_router(router=likes_router)

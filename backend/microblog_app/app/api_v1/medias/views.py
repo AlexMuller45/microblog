@@ -2,8 +2,8 @@
 
 import imghdr
 import os
-import aiofiles
 
+import aiofiles
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
