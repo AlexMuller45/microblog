@@ -1,9 +1,11 @@
 """Роуты для Media"""
 
 import imghdr
-
+import os
 import aiofiles
+
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
@@ -56,3 +58,16 @@ async def add_media(
         await out_file.write(in_file.file.read())
 
     return {"result": True, "media_id": media_id}
+
+
+@router.get("/{image_path}", status_code=status.HTTP_200_OK)
+def get_image(image_path: str) -> FileResponse:
+    full_path = f"{settings.media_path}/{image_path}"
+
+    if os.path.isfile(full_path):
+        return FileResponse(full_path)
+
+    raise HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="File not found",
+    )
