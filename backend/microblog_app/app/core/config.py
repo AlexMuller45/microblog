@@ -16,7 +16,6 @@ class Setting(BaseSettings):
     postgres_db: str = "microblog_db"
     pg_container_name: str
     pg_port: int = 5432
-    db_url_docker: str
     db_url: str
     db_echo: bool = False
     api_v1_prefix: str = "/api"

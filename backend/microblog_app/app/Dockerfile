@@ -13,7 +13,8 @@ RUN poetry install --no-root
 
 COPY . .
 
-WORKDIR /microblog_app/app
+RUN mv .env_docker .env
 
+WORKDIR /microblog_app/app
 
 #CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5500"]
