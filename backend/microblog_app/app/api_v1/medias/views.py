@@ -8,7 +8,6 @@ from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.secure import check_user
 from core.config import settings
 from core.models import db_helper
 
@@ -18,7 +17,10 @@ from .schemas import MediaAdd
 router = APIRouter(tags=["Medias"])
 
 
-@router.get("/{image_name}", status_code=status.HTTP_200_OK)
+@router.get(
+    "/{image_name}",
+    status_code=status.HTTP_200_OK,
+)
 def get_image(image_name: str) -> FileResponse:
     """
     Отправка файла на фронтэнд.
