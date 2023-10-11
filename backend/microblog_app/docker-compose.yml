@@ -52,6 +52,9 @@ services:
       - "80:80"
     volumes:
       - ../../frontend/static:/usr/share/nginx/html/
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - backend
     networks:
       - network
 
