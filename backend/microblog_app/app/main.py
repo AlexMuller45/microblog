@@ -6,31 +6,18 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 
 from api_v1 import router as router_v1
-from api_v1.medias.views import router as media_router
-from auth.secure import check_user
 from core.config import settings
 
 app = FastAPI()
 app.include_router(router_v1, prefix=settings.api_v1_prefix)
 
 
-origins = [
-    "http://localhost:80",
-]
-
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=settings.origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PATCH", "PUT"],
-    allow_headers=[
-        "Content-Type",
-        "Set-Cookie",
-        "Access-Control-Allow-Headers",
-        "Access-Control-Allow-Origin",
-        "Authorization",
-    ],
+    allow_methods=settings.all_methods,
+    allow_headers=settings.safe_listed_headers,
 )
 
 
@@ -61,5 +48,5 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 
 @app.get("/")
 def index():
-    """Тестовый роут"""
+    """Тестовый эндпоинт"""
     return {"message": "Hello world!"}

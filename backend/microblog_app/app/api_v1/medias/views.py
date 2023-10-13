@@ -2,6 +2,7 @@
 
 import imghdr
 import os
+import shutil
 
 import aiofiles
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
@@ -56,7 +57,7 @@ async def add_media(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     """
-    Добавление файла.
+    Добавление имени файла в БД, присвоение ID, сохранение файла на сервер
 
     Args:
         in_file (UploadFile): Входящий файл.
@@ -84,6 +85,7 @@ async def add_media(
     file_path = f"{settings.media_path}/{settings.filename.format(media_id=media_id, in_file_name=in_file.filename)}"
 
     async with aiofiles.open(file_path, "wb") as out_file:
-        await out_file.write(in_file.file.read())
+        # await out_file.write(in_file.read())
+        shutil.copyfileobj(in_file.file, out_file)
 
     return {"result": True, "media_id": media_id}
