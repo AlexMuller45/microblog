@@ -87,6 +87,5 @@ async def add_media(
     async with aiofiles.open(file_path, "wb") as out_file:
         content = await file.read()
         await out_file.write(content)
-        # shutil.copyfileobj(in_file.file, out_file)
 
     return {"result": True, "media_id": media_id}

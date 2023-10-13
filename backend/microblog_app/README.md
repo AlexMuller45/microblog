@@ -1,6 +1,3 @@
-`uvicorn app.main:app --reload --port 5500`
-
-db:
 
 `docker compose up`
 
