@@ -77,7 +77,7 @@ services:
     env_file:
       - .env_docker
     volumes:
-      - ./app/media:/microblog_app/app/media:rw
+      - ./app/media:/microblog_app/app/media
     networks:
       - network
 

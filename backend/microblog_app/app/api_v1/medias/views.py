@@ -41,10 +41,8 @@ def get_image(image_name: str) -> FileResponse:
     if os.path.isfile(full_path):
         return FileResponse(full_path)
 
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="File not found",
-    )
+    default_img = f"{settings.media_path}/no_img.jpg"
+    return FileResponse(default_img)
 
 
 @router.post(
@@ -85,8 +83,7 @@ async def add_media(
     file_path = f"{settings.media_path}/{settings.filename.format(media_id=media_id, file_name=file.filename)}"
 
     async with aiofiles.open(file_path, "wb") as out_file:
-        # content = await file.read()
-        # await out_file.write(content)
-        shutil.copyfileobj(file.file, out_file)
+        content = await file.read()
+        await out_file.write(content)
 
     return {"result": True, "media_id": media_id}
