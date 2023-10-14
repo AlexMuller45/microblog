@@ -163,3 +163,4 @@ cython_debug/
 .git/!/backend/microblog_app/.env_docker
 !/backend/microblog_app/.env
 !/backend/microblog_app/.env
+/backend/microblog_app/.env
