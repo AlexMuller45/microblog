@@ -2,10 +2,6 @@
 Create Read Update Delete для Tweet
 """
 
-from typing import Any, Dict, List
-
-from fastapi.encoders import jsonable_encoder
-from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.engine import Result
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -14,8 +10,8 @@ from sqlalchemy.orm import joinedload, selectinload
 from auth.secure import get_user_id
 from core.models import Follow, Tweet
 
-from .schemas import TweetBase, TweetIn
-from .servises import get_attachments, hide_api_key_tweet
+from .schemas import TweetIn
+from .servises import get_attachments
 
 
 async def get_tweet(session: AsyncSession, tweet_id: int) -> Tweet | None:

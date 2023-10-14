@@ -2,7 +2,6 @@
 
 import imghdr
 import os
-import shutil
 
 import aiofiles
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status

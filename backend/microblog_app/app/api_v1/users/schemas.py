@@ -1,8 +1,7 @@
 """Валидация данных для User"""
 
-from typing import List, Optional
-
-from pydantic import BaseModel, Field, computed_field
+from typing import List
+from pydantic import BaseModel, Field
 
 
 class UserBase(BaseModel):
