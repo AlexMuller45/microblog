@@ -56,7 +56,7 @@ class Setting(BaseSettings):
     pgadmin_default_password: str
     pgadmin_listen_port: int
     media_path: str = f"{BASE_DIR}/app/media"
-    filename: str = "{media_id}__{in_file_name}"
+    filename: str = "{media_id}__{file_name}"
     origins: list[str] = ORIGINS
     all_methods: list[str] = ALL_METHODS
     safe_listed_headers: list[str] = SAFELISTED_HEADERS

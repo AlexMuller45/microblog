@@ -82,10 +82,11 @@ async def add_media(
         )
 
     media_id: int = await crud.add_media(session=session, file_name=file.filename)
-    file_path = f"{settings.media_path}/{settings.filename.format(media_id=media_id, in_file_name=file.filename)}"
+    file_path = f"{settings.media_path}/{settings.filename.format(media_id=media_id, file_name=file.filename)}"
 
     async with aiofiles.open(file_path, "wb") as out_file:
-        content = await file.read()
-        await out_file.write(content)
+        # content = await file.read()
+        # await out_file.write(content)
+        shutil.copyfileobj(file.file, out_file)
 
     return {"result": True, "media_id": media_id}

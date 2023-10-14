@@ -76,6 +76,8 @@ services:
       - 5500:5500
     env_file:
       - .env_docker
+    volumes:
+      - ./app/media:/microblog_app/app/media:rw
     networks:
       - network
 
