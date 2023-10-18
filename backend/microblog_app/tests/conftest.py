@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.pool import NullPool
+from starlette.testclient import TestClient
 
 from core.models import DatabaseHelper, Base, db_helper
 from core.config import settings
@@ -35,9 +35,10 @@ async def ac() -> AsyncGenerator[AsyncClient, None]:
 
 
 @pytest.fixture(scope="session")
-def async_session_test() -> AsyncSession:
-    async_session = test_db_helper.session_dependency()
-    yield async_session
+async def test_session() -> AsyncSession:
+    async with test_db_helper.engine.begin() as conn:
+        async with AsyncSession(conn) as session:
+            yield session
 
 
 @pytest.fixture(autouse=True, scope="session")
@@ -50,7 +51,7 @@ async def prepare_database():
 
 
 @pytest.fixture(scope="function")
-def client() -> Generator[TestClient, Any, None]:
+def test_client() -> TestClient:
     app.dependency_overrides[db_helper] = test_db_helper
-    with TestClient(app) as clnt:
-        yield clnt
+    with TestClient(app) as client:
+        return client
