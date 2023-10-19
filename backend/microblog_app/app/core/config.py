@@ -50,7 +50,6 @@ class Setting(BaseSettings):
     pg_container_name: str
     pg_port: int = 5432
     db_url: str
-    test_db_url: str
     db_echo: bool = False
     api_v1_prefix: str = "/api"
     pgadmin_default_email: str

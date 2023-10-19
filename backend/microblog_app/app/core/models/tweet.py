@@ -37,8 +37,8 @@ class Tweet(Base):
 
     likes: Mapped[List["Like"] | None] = relationship(
         back_populates="tweet",
-        cascade="all, delete-orphan",
-        passive_deletes=True,
+        # cascade="all, delete-orphan",
+        # passive_deletes=True,
     )
     author: Mapped["User"] = relationship(back_populates="tweets")
 

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+
+  postgres:
+    image: postgres
+    container_name: test_postgresql
+    restart: always
+    environment:
+      POSTGRES_USER: developer
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: microblog_db
+    ports:
+      - "5432:5432"
+
