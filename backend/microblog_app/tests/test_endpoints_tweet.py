@@ -1,7 +1,7 @@
 import pytest
 
 from httpx import AsyncClient
-from sqlalchemy import insert, select, Result
+from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import User, Tweet
@@ -19,7 +19,7 @@ async def test_auth_tweet(ac: AsyncClient):
     assert data["result"] == False
 
 
-async def test_endpoint_get_tweets(user, ac: AsyncClient):
+async def test_endpoint_get_tweets(ac: AsyncClient):
     response = await ac.get(ENDPOINT, headers=AUTH)
     assert response.status_code == 200
 
@@ -29,11 +29,11 @@ async def test_endpoint_get_tweets(user, ac: AsyncClient):
     assert isinstance(data["tweets"], list)
 
 
-async def test_add_user_in_db(test_session: AsyncSession):
-    query = select(User)
+async def test_add_user_in_db(user, test_session: AsyncSession):
+    query = select(User).where(User.name == "Like_69")
     result: Result = await test_session.execute(query)
-    data = result.scalars().first()
-    assert data.name == "Test"
+    data = result.scalar()
+    assert data.name == "Like_69"
 
 
 async def test_endpoint_post_tweet(ac: AsyncClient):
@@ -56,11 +56,17 @@ async def test_add_tweet_in_db(tweet, test_session: AsyncSession):
     assert isinstance(_tweet.content, str)
 
 
-async def test_endpoint_delete_tweet(test_session: AsyncSession, ac: AsyncClient):
-    _tweet = await test_session.scalar(select(Tweet))
+async def test_endpoint_delete_tweet(
+    tweet, test_session: AsyncSession, ac: AsyncClient
+):
+    _tweet = (
+        await test_session.scalars(
+            select(Tweet).where(Tweet.content == "test test to add tweet")
+        )
+    ).first()
     tweet_id = _tweet.id
     print(tweet_id)
-    response = await ac.delete(f"{ENDPOINT}1", headers=AUTH)
+    response = await ac.delete(f"{ENDPOINT}{tweet_id}", headers=AUTH)
 
     assert response.status_code == 200
 

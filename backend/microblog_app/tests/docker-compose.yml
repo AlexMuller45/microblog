@@ -2,14 +2,15 @@ version: '3.8'
 
 services:
 
-  postgres:
+  app_pg:
     image: postgres
-    container_name: test_postgresql
+    container_name: app_postgresql
     restart: always
     environment:
-      POSTGRES_USER: developer
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: "developer"
+      POSTGRES_PASSWORD: "admin"
       POSTGRES_DB: microblog_db
+    volumes:
+      - ../test_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-

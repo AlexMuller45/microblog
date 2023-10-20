@@ -41,6 +41,7 @@ pylint = "^3.0.1"
 [tool.pytest.ini_options]
 pythonpath = ["app"]
 asyncio_mode="auto"
+collect_ignore = ["./tests/test_data"]
 
 [build-system]
 requires = ["poetry-core"]
