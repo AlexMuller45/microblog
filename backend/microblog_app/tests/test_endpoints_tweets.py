@@ -30,7 +30,7 @@ class TestDB:
         assert data["result"] == False
 
 
-class TestEndpointsTweet:
+class TestEndpointsTweets:
     async def test_endpoint_get_tweets(self, ac: AsyncClient):
         response = await ac.get(ENDPOINT, headers=AUTH)
         assert response.status_code == 200

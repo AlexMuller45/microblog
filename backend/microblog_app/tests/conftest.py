@@ -6,8 +6,7 @@ from httpx import AsyncClient
 from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-import core
-from core.models import DatabaseHelper, Base, db_helper, User, Tweet, Like
+from core.models import DatabaseHelper, User, Tweet, Like
 
 from main import app
 
