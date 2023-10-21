@@ -7,7 +7,7 @@ from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import core
-from core.models import DatabaseHelper, Base, db_helper, User, Tweet
+from core.models import DatabaseHelper, Base, db_helper, User, Tweet, Like
 
 from main import app
 
@@ -73,3 +73,15 @@ async def tweet(test_session: AsyncSession):
     test_session.add(tweet)
     await test_session.commit()
     await test_session.refresh(tweet)
+
+
+async def get_tweet_id(test_session: AsyncSession):
+    _tweet = (await test_session.scalars(select(Tweet))).first()
+
+    return _tweet.id
+
+
+async def get_tweet_id_through_like(test_session: AsyncSession):
+    _like = (await test_session.scalars(select(Like))).first()
+
+    return _like.tweet_id
