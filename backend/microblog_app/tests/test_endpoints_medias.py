@@ -36,13 +36,16 @@ class TestEndpointsMedias:
         files = {"file": ("temp_file.jpg", open("temp_file.jpg", "rb"))}
 
         response = await ac.post(self.endpoint, files=files)
+        media_id = response.json()["media_id"]
         assert response.status_code == 201
 
-        stmt = select(Media).where(Media.id == response.json()["media_id"])
+        stmt = select(Media).where(Media.id == media_id)
         result = await test_session.execute(stmt)
         _media = result.scalar()
-
+        print(_media)
         assert _media is not None
 
+        file_path = f"{self.media_dir}/{settings.filename.format(media_id=media_id, file_name='temp_file.jpg')}"
+        os.remove(file_path)
         await test_session.delete(_media)
         await test_session.commit()
