@@ -17,7 +17,7 @@ app.add_middleware(
     allow_origins=settings.origins,
     allow_credentials=True,
     allow_methods=settings.all_methods,
-    allow_headers=settings.safe_listed_headers,
+    allow_headers="*",
 )
 
 
