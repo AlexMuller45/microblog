@@ -19,7 +19,7 @@ ORIGINS = [
 ALL_METHODS = [
     "DELETE",
     "GET",
-    "HEAD",
+    # "HEAD",
     # "OPTIONS",
     # "PATCH",
     "POST",

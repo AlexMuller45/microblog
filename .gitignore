@@ -164,3 +164,4 @@ cython_debug/
 !/backend/microblog_app/.env
 !/backend/microblog_app/.env
 /backend/microblog_app/.env
+!/frontend/static/.vscode/
