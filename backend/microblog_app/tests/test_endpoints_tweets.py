@@ -1,8 +1,8 @@
+from core.models import Tweet, User
 from httpx import AsyncClient
-from sqlalchemy import select, Result
+from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models import User, Tweet
 from .conftest import ac, test_session, tweet, user
 
 ENDPOINT = "/api/tweets/"

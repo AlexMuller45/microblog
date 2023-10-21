@@ -1,11 +1,8 @@
+from backend.microblog_app.tests.conftest import (get_tweet_id,
+                                                  get_tweet_id_through_like,
+                                                  test_session)
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from backend.microblog_app.tests.conftest import (
-    get_tweet_id,
-    test_session,
-    get_tweet_id_through_like,
-)
 
 
 class TestEndpointsLike:

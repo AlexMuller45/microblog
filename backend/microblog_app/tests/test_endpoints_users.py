@@ -1,8 +1,8 @@
+from core.models import User
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .conftest import ac, test_session, user
-from core.models import User
 
 
 class TestEndpointsUsers:

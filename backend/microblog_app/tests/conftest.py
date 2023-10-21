@@ -1,15 +1,11 @@
 import asyncio
 
 import pytest
-
+from core.models import DatabaseHelper, Like, Tweet, User
 from httpx import AsyncClient
-from sqlalchemy import select, insert
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from core.models import DatabaseHelper, User, Tweet, Like
-
 from main import app
-
+from sqlalchemy import insert, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 TEST_DB_URL = "postgresql+asyncpg://developer:admin@localhost:5432/microblog_db"
 test_db_helper = DatabaseHelper(url=TEST_DB_URL, echo=False)
