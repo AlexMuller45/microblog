@@ -27,7 +27,7 @@ async def get_media_path(
 
     media: Media = await crud.get_media(session=session, media_id=media_id)
     media_file_name: str = settings.filename.format(
-        media_id=media_id, in_file_name=media.filename
+        media_id=media_id, file_name=media.filename
     )
     return f"/api/medias/{media_file_name}"
 

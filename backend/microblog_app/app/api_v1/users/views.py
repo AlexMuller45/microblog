@@ -1,6 +1,6 @@
 """Роуты для User"""
 
-from typing import Annotated, List
+from typing import List
 
 from fastapi import APIRouter, Depends, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,8 +10,13 @@ from auth.secure import check_user, get_user_id
 from core.models import Follow, User, db_helper
 
 from . import crud
-from .dependencies import (get_follow_by_user_id, get_follower, get_following,
-                           get_my_follower, get_my_following)
+from .dependencies import (
+    get_follow_by_user_id,
+    get_follower,
+    get_following,
+    get_my_follower,
+    get_my_following,
+)
 
 router = APIRouter(tags=["Users"])
 

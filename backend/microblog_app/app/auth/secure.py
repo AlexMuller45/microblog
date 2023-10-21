@@ -1,9 +1,6 @@
 """Модуль аутентификации"""
 
-import json
-from typing import Optional
-
-from fastapi import Depends, HTTPException, Response, Security
+from fastapi import Depends, HTTPException, Security
 from fastapi.security.api_key import APIKeyHeader
 from sqlalchemy import Select, select
 from sqlalchemy.engine import Result

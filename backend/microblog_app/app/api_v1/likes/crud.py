@@ -49,7 +49,8 @@ async def get_like_by_tweet_id(session: AsyncSession, tweet_id, api_key: str) ->
         api_key (str): API-ключ для аутентификации.
 
     Returns:
-        Like: объект Like, соответствующий идентификатору твита и аутентифицированному пользователю.
+        Like: объект Like, соответствующий идентификатору твита
+        и аутентифицированному пользователю.
 
     """
 

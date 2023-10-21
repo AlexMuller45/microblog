@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 from api_v1.likes.schemas import Like
 from api_v1.users.schemas import User
