@@ -10,10 +10,6 @@ BASE_DIR = Path(__file__).parent.parent.parent
 ORIGINS = [
     "http://localhost",
     "http://localhost:80",
-    "ws://localhost",
-    "wss://localhost",
-    "ws://localhost:80",
-    "wss://localhost:80",
 ]
 
 ALL_METHODS = [
@@ -29,11 +25,11 @@ ALL_METHODS = [
 SAFELISTED_HEADERS = [
     "Accept",
     "Accept-Language",
-    # "Accept-Encoding",
-    # "Connection",
-    # "Content-Language",
+    "Accept-Encoding",
+    "Connection",
+    "Content-Language",
     "Content-Type",
-    # "Set-Cookie",
+    "Set-Cookie",
     "Access-Control-Allow-Headers",
     "Access-Control-Allow-Origin",
     "Authorization",
