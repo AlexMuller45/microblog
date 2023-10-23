@@ -161,7 +161,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 .git/!/backend/microblog_app/.env_docker
-!/backend/microblog_app/.env
-!/backend/microblog_app/.env
+/frontend/static/.vscode/
+/backend/microblog_app/app/.ruff_cache/
 /backend/microblog_app/.env
-!/frontend/static/.vscode/
